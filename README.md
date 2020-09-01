@@ -40,7 +40,7 @@ the lock.
 `:param int level: logging level for the log messages (default is 10, which is logging.DEBUG)`
 
 
-The intended way of using this is similar to asyncio.Lock
+The intended way of using this is similar to [`asyncio.Lock`](https://docs.python.org/3/library/asyncio-sync.html#asyncio.Lock)
 ```
 >>> from asyncutils import LoggedLock
 >>> lock = LoggedLock(name="hello_world_lock", level=logging.INFO)
@@ -61,3 +61,39 @@ root - INFO - hello_world_lock acquired. In foobar task
 root - INFO - hello_world_lock released. In foobar task
 ```
 
+### 2. MessageCondition
+
+`MessageCondition(lock=None)`
+
+A MessageCondition instance, NOT thread-safe
+
+A MessageCondition is an extension of [`asyncio.Condition`](https://docs.python.org/3/library/asyncio-sync.html#asyncio.Condition) that allows passing messages to the waiting coroutines.
+
+`:param asyncio.Lock lock: An optional lock instance to be used by condition. If None then a new lock will be used`
+
+The intended way to use the instances of this class is same as using
+[`asyncio.Condition`](https://docs.python.org/3/library/asyncio-sync.html#asyncio.Condition)
+
+Sending messages to all waiters
+
+```
+>>> from asyncutils import MessageCondition
+>>> msg_cond = MessageCondition()
+>>> async with msg_cond:
+>>>     msg_cond.notify_all(msg="hello world!")
+```
+
+Sending messages to `n` waiters
+```
+>>> async with msg_cond:
+>>>     msg_cond.notify(n=2, msg="hello world!")
+```
+
+Waiting for notifications
+
+```
+>>> async with msg_cond:
+>>>     msg = await msg_cond.wait()
+>>> print(msg)
+hello world!
+```
