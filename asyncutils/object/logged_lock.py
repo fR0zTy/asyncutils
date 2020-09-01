@@ -10,13 +10,17 @@ class LoggedLock(asyncio.Lock):
         """
         LoggedLock instance, NOT thread-safe
 
-        A LoggedLock is an extension of asyncio.Lock which logs its state when acquired and released.
-        In addition to its state, it also allows to pass additional messages which are logged during
-        acquisition and release of the lock.
+        A LoggedLock is an extension of asyncio.Lock which logs its state when
+        acquired and released. In addition to its state, it also allows to pass
+        additional messages which are logged during acquisition and release of
+        the lock.
 
-        :param Optional[str] name: An optional name for the lock used during logging
-        :param logging.Logger logger: Logger instance used for logging (default is root)
-        :param int level: logging level for the log messages (default is 10, which is logging.DEBUG)
+        :param Optional[str] name: An optional name for the lock used during
+                                   logging
+        :param logging.Logger logger: Logger instance used for logging
+                                      (default is root)
+        :param int level: logging level for the log messages
+                          (default is 10, which is logging.DEBUG)
 
         The intended way of using this is similar to asyncio.Lock
 
@@ -46,7 +50,8 @@ class LoggedLock(asyncio.Lock):
 
     async def acquire(self):
         info = self.__task_info_lut.get(asyncio.current_task(), "")
-        self.logger.log(self.level, f"{self.name} waiting for acquisition. {info}")
+        self.logger.log(self.level, (f"{self.name} waiting for acquisition."
+                                     f" {info}"))
         await super().acquire()
         self.logger.log(self.level, f"{self.name} acquired. {info}")
 
