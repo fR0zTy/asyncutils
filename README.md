@@ -27,7 +27,7 @@ This package contains a collection of objects which are built using python's sta
 
 LoggedLock instance, NOT thread-safe
 
-A LoggedLock is an extension of asyncio.Lock which logs its state when
+A LoggedLock is an extension of [`asyncio.Lock`](https://docs.python.org/3/library/asyncio-sync.html#asyncio.Lock) which logs its state when
 acquired and released. In addition to its state, it also allows to pass
 additional messages which are logged during acquisition and release of
 the lock.
@@ -42,6 +42,7 @@ the lock.
 
 The intended way of using this is similar to asyncio.Lock
 ```
+>>> from asyncutils import LoggedLock
 >>> lock = LoggedLock(name="hello_world_lock", level=logging.INFO)
 >>> async with lock:
 >>>     await asyncio.sleep(0.1)
