@@ -54,9 +54,10 @@ class Notification:
         """
         await self.__wake_up_done_event.wait()
 
-        self.__wake_n = len(self._notify_condition._waiters) if n < 0 else n
+        if n_waiters:= len(self._notify_condition._waiters):
+            self.__wake_n = n_waiters if n < 0 else n
 
-        if self._notify_condition._waiters and self.__wake_n > 0:
+        if self.__wake_n > 0:
             self.__wake_up_done_event.clear()
 
         async with self._notify_condition:
