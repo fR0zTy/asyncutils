@@ -97,3 +97,38 @@ Waiting for notifications
 >>> print(msg)
 hello world!
 ```
+
+### 3. Notification
+
+`Notification(lock=None)`
+
+A Notification instance, NOT thread-safe
+
+A Notification is a synchronization object which allows passing notification messages between waiting coroutines.
+**The advantage of a notification over a** `MessageCondition` **is that, once a notification is sent, it ensures that all the waiting coroutines must wake up and get the message before a another notification can be sent.**
+
+`:param asyncio.Lock lock: Lock to be used for shared access. If None (default) then new lock will be used.`
+
+The intended way of using this coroutine is shown below;
+
+Sending notifications
+
+```
+>>> from asyncutils import Notification
+>>> notification = Notification()
+>>> await notification.send(msg="hello world!")
+```
+
+there is also a keyword-only argument `n=-1` for `send` coroutine, which represents the number of waiters to wake up. By default its set to `-1` which will wake up all the waiters, but one can use this to wake `n` waiters as shown below;
+
+```
+>>> await notification.send(n=2, msg="hello world!")
+```
+
+Receiving notifications
+
+```
+>>> msg = await notification.recv()
+>>> print(msg)
+hello world!
+```
