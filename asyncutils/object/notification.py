@@ -52,9 +52,10 @@ class Notification:
                         (default is None)
 
         """
-        await self.__wake_up_done_event.wait()
+        if not self.__wake_up_done_event.is_set():
+            await self.__wake_up_done_event.wait()
 
-        if n_waiters:= len(self._notify_condition._waiters):
+        if n_waiters := len(self._notify_condition._waiters):
             self.__wake_n = n_waiters if n < 0 else n
 
         if self.__wake_n > 0:
